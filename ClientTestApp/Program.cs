@@ -197,8 +197,6 @@ namespace ClientTestApp
 
         static async Task SendLog(CancellationToken token)
         {
-            //Thread.Sleep(1);
-
             WebRequest webRequest = WebRequest.Create("http://127.0.0.1:8080");
             webRequest.Method = "POST";
 
@@ -208,7 +206,6 @@ namespace ClientTestApp
             string eventKey = eventTypeArray[random.Value.Next(eventTypeArray.Length)];
             string eventValue = randomEventValueArray[random.Value.Next(randomEventValueArray.Length)];
 
-            //string body = "{" + $"'client_id':'{clientId}','event_id':'{eventId}','event_timestamp':{eventTimeStamp},'event_type':'CUMULATIVE','event_key':'{eventKey}', 'event_value':'{eventValue}'" + "}";
             string body = "{" + $"'client_id':'{clientId}','event_timestamp':{eventTimeStamp},'event_type':'CUMULATIVE','event_key':'{eventKey}', 'event_value':'{eventValue}'" + "}";
 
             byte[] requestBodyBuffer = Encoding.UTF8.GetBytes(body.Trim());

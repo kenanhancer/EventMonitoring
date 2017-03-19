@@ -28,3 +28,10 @@ When you write <b>info()</b>, it shows short information.
 
 if you want to see events of any client, use <b>getclient</b>
 ![6](https://cloud.githubusercontent.com/assets/1851856/24085468/76a4dd84-0d05-11e7-9007-6c2d39af5bb5.PNG)
+
+Let's make 10000 requests concurrently. Request count is 10000. But, Respond count is 4735. it is less. Because, maximum number of concurrent request sended. 
+![7](https://cloud.githubusercontent.com/assets/1851856/24085575/4f55dac4-0d07-11e7-9a69-0bac6e42af53.PNG)
+
+When CPU usage reached 100%, Monitoring server app can't take new request. So, request count is 4735 in server app, even though client test app sends 10000 requests.
+
+![8](https://cloud.githubusercontent.com/assets/1851856/24085678/b7e9cfc2-0d08-11e7-89b4-ea67d4c2d377.PNG)

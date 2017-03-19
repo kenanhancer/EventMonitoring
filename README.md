@@ -46,7 +46,13 @@ https://www.microsoft.com/net/core#linuxubuntu
 Windows
 https://www.microsoft.com/net/core#windowscmd
 
-Download project from github and extract folder. After that, open two terminal and enter PublishOutput directory. That is all.
+Download project from github and extract folder. After that, open two terminal and enter PublishOutput directory. Run below commands respectively.
+
+dotnet MonitoringConsoleApp.dll
+
+dotnet ClientTestApp.dll
+
+That is all.
 
 ![9](https://cloud.githubusercontent.com/assets/1851856/24085730/ad994c7c-0d09-11e7-8da2-c0078180a7aa.PNG)
 

@@ -35,3 +35,18 @@ Let's make 10000 requests concurrently. Request count is 10000. But, Respond cou
 When CPU usage reached 100%, Monitoring server app can't take new request. So, request count is 4735 in server app, even though client test app sends 10000 requests. Notice that response count is 4735 above picture. 
 
 ![8](https://cloud.githubusercontent.com/assets/1851856/24085678/b7e9cfc2-0d08-11e7-89b4-ea67d4c2d377.PNG)
+
+##How to run applications
+
+First of all, download .NET Core.
+
+Linux(ubuntu)
+https://www.microsoft.com/net/core#linuxubuntu
+
+Windows
+https://www.microsoft.com/net/core#windowscmd
+
+Download project from github and extract folder. After that, open two terminal and enter PublishOutput directory. That is all.
+
+![9](https://cloud.githubusercontent.com/assets/1851856/24085730/ad994c7c-0d09-11e7-8da2-c0078180a7aa.PNG)
+

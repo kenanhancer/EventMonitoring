@@ -36,7 +36,7 @@ When CPU usage reached 100%, Monitoring server app can't take new request. So, r
 
 ![8](https://cloud.githubusercontent.com/assets/1851856/24085678/b7e9cfc2-0d08-11e7-89b4-ea67d4c2d377.PNG)
 
-##How to run applications
+## How to run applications
 
 First of all, download .NET Core.
 

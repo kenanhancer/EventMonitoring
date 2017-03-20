@@ -16,11 +16,11 @@ You can test single threaded or multithreaded. Let's see how to test. 6 clients 
 
 There is a simple help menu in Monitoring Server application.
 
-![3](https://cloud.githubusercontent.com/assets/1851856/24085466/76a395c8-0d05-11e7-967e-a4ac4ef79cf0.PNG)
+![1](https://cloud.githubusercontent.com/assets/1851856/24094102/d6486710-0d5f-11e7-8c40-3b78c059d317.PNG)
 
 When you write <b>help()</b>, it shows all commands.
 
-![4](https://cloud.githubusercontent.com/assets/1851856/24085467/76a3ca52-0d05-11e7-8ad2-4d0eed043b2a.PNG)
+![5](https://cloud.githubusercontent.com/assets/1851856/24094098/d623be9c-0d5f-11e7-955a-41eee83ae56b.PNG)
 
 When you write <b>info()</b>, it shows short information.
 

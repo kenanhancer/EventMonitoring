@@ -54,5 +54,7 @@ dotnet ClientTestApp.dll
 
 That is all.
 
-![9](https://cloud.githubusercontent.com/assets/1851856/24085730/ad994c7c-0d09-11e7-8da2-c0078180a7aa.PNG)
+![2](https://cloud.githubusercontent.com/assets/1851856/24094103/d64e1e94-0d5f-11e7-9373-4170f8a3fa63.PNG)
+
+![1](https://cloud.githubusercontent.com/assets/1851856/24094102/d6486710-0d5f-11e7-8c40-3b78c059d317.PNG)
 

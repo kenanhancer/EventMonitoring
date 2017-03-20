@@ -45,7 +45,28 @@ namespace ClientTestApp
                     cts.Cancel();
                 };
 
-                Console.WriteLine("Test Cases:");
+                Console.WriteLine("Event Monitoring Test Application");
+                Console.WriteLine("=================================");
+                Console.Write("IP(127.0.0.1): ");
+                string ip = Console.ReadLine().Trim();
+                IPAddress ipAddress;
+
+                while (String.IsNullOrEmpty(ip) || !IPAddress.TryParse(ip, out ipAddress))
+                {
+                    Console.Write("IP(127.0.0.1): ");
+                    ip = Console.ReadLine().Trim();
+                }
+
+                Console.Write("Port(8080): ");
+                string port = Console.ReadLine().Trim();
+
+                while (String.IsNullOrEmpty(port) || (port.ToCharArray().Any(c => !Char.IsNumber(c))))
+                {
+                    Console.Write("Port(8080): ");
+                    port = Console.ReadLine().Trim();
+                }
+
+                Console.WriteLine("\nTest Cases:");
                 Console.WriteLine("===========");
                 Console.WriteLine("1-) Single threaded test");
                 Console.WriteLine("2-) Multithreaded test");
@@ -72,19 +93,19 @@ namespace ClientTestApp
                     clientNumer = Console.ReadLine().Trim();
                 }
 
-                Console.Write("Show events: ");
+                Console.Write("Show events(Y/N): ");
                 string showEvents = Console.ReadLine().Trim().ToLower();
 
                 while (String.IsNullOrEmpty(showEvents) || (!yesArray.Contains(showEvents) && !noArray.Contains(showEvents)))
                 {
-                    Console.Write("Show events: ");
+                    Console.Write("Show events(Y/N): ");
                     showEvents = Console.ReadLine().Trim();
                 }
 
                 Dictionary<string, string> argsDict = new Dictionary<string, string>();
                 argsDict.Add("testnumber", testNumber);
-                argsDict.Add("ipnumber", "127.0.0.1");
-                argsDict.Add("port", "8080");
+                argsDict.Add("ipnumber", ip);
+                argsDict.Add("port", port);
                 argsDict.Add("clientnumber", clientNumer);
                 argsDict.Add("showevents", showEvents);
 
@@ -145,15 +166,17 @@ namespace ClientTestApp
             requestCount = 0;
             responseCount = 0;
 
+            string url = $"http://{ip}:{portNumber}";
+
             Stopwatch sw = Stopwatch.StartNew();
 
             if (testCaseNumber == "1")
             {
-                await SingleThreadClientTest(clientCount);
+                await SingleThreadClientTest(url, clientCount);
             }
             else if (testCaseNumber == "2")
             {
-                ParallelQuery<Task> taskList = MultithreadedClientTest(clientCount, token);
+                ParallelQuery<Task> taskList = MultithreadedClientTest(url, clientCount, token);
 
                 await Task.WhenAll(taskList.ToArray()).ContinueWith(t => t, token);
             }
@@ -174,30 +197,30 @@ namespace ClientTestApp
             return await Task.FromResult<int>(0);
         }
 
-        static ParallelQuery<Task> MultithreadedClientTest(int count, CancellationToken token)
+        static ParallelQuery<Task> MultithreadedClientTest(string url, int count, CancellationToken token)
         {
             ParallelQuery<Task> taskList = ParallelEnumerable.Range(0, count)
                                                              .WithDegreeOfParallelism(Environment.ProcessorCount)
                                                              .WithCancellation(token)
                                                              .Select(async index =>
                                                              {
-                                                                 await SendLog(token).ContinueWith(t => t, token).ThrowsAsync(ex => Console.WriteLine(ex.Message));
+                                                                 await SendLog(url, token).ContinueWith(t => t, token).ThrowsAsync(ex => Console.WriteLine(ex.Message));
                                                              });
 
             return taskList;
         }
 
-        static async Task SingleThreadClientTest(int count)
+        static async Task SingleThreadClientTest(string url, int count)
         {
             for (int i = 0; i < count; i++)
             {
-                await SendLog(CancellationToken.None).ThrowsAsync();
+                await SendLog(url, CancellationToken.None).ThrowsAsync(ex => Console.WriteLine(ex.Message));
             }
         }
 
-        static async Task SendLog(CancellationToken token)
+        static async Task SendLog(string url, CancellationToken token)
         {
-            WebRequest webRequest = WebRequest.Create("http://127.0.0.1:8080");
+            WebRequest webRequest = WebRequest.Create(url);
             webRequest.Method = "POST";
 
             string clientId = randomUserArray[random.Value.Next(randomUserArray.Length)];

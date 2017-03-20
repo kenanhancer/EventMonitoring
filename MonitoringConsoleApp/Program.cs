@@ -12,18 +12,29 @@ namespace MonitoringConsoleApp
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Monitoring Console Application");
-            Console.WriteLine("==============================");
+            Console.WriteLine("Event Monitoring Server Application");
+            Console.WriteLine("===================================");
 
             if (args.Length == 0)
-                args = new string[] { "127.0.0.1", "8080" };
+            {
+                Console.Write("Port(8080): ");
+                string port = Console.ReadLine().Trim();
+
+                while (String.IsNullOrEmpty(port) || (port.ToCharArray().Any(c => !Char.IsNumber(c))))
+                {
+                    Console.Write("Port(8080): ");
+                    port = Console.ReadLine().Trim();
+                }
+
+                args = new string[] { port };
+            }
 
             MainAsync(args).ThrowsAsync(ex => Console.WriteLine(ex.Message)).Wait();
         }
 
         static async Task MainAsync(params string[] args)
         {
-            if (args == null || args.Length < 2)
+            if (args == null || args.Length < 1)
                 throw new ArgumentOutOfRangeException("args");
 
             CancellationTokenSource cts = new CancellationTokenSource();
@@ -35,9 +46,9 @@ namespace MonitoringConsoleApp
                 cts.Cancel();
             };
 
-            string ip = args[0];
+            string ip = "127.0.0.1";
 
-            string portNumber = args[1];
+            string portNumber = args[0];
 
             ICache inMemoryCache = new InMemoryCache();
 

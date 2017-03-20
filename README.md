@@ -24,10 +24,10 @@ When you write <b>help()</b>, it shows all commands.
 
 When you write <b>info()</b>, it shows short information.
 
-![5](https://cloud.githubusercontent.com/assets/1851856/24085469/76a53e5a-0d05-11e7-901b-7b598b9225f7.PNG)
+![9](https://cloud.githubusercontent.com/assets/1851856/24094095/d61e4b2e-0d5f-11e7-94ba-78bc5969bbdc.PNG)
 
 if you want to see events of any client, use <b>getclient</b>
-![6](https://cloud.githubusercontent.com/assets/1851856/24085468/76a4dd84-0d05-11e7-9007-6c2d39af5bb5.PNG)
+![7](https://cloud.githubusercontent.com/assets/1851856/24094097/d623718a-0d5f-11e7-9ac6-3f4f87a22a5c.PNG)
 
 Let's make 10000 requests concurrently. Request count is 10000. But, Respond count is 4735. it is less. Because, maximum number of concurrent request sended. 
 ![7](https://cloud.githubusercontent.com/assets/1851856/24085575/4f55dac4-0d07-11e7-9a69-0bac6e42af53.PNG)

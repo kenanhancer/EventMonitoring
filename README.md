@@ -8,10 +8,11 @@ There are two projects in solution. Their names are <b>MonitoringConsoleApp</b> 
 
 <b>MonitoringConsoleApp</b> is a event server application. <b>ClientTestApp</b> is a test application as shown below.
 
+![2](https://cloud.githubusercontent.com/assets/1851856/24094103/d64e1e94-0d5f-11e7-9373-4170f8a3fa63.PNG)
 
 You can test single threaded or multithreaded. Let's see how to test. 6 clients send random events to server. After that it showed result.
 
-![2](https://cloud.githubusercontent.com/assets/1851856/24085433/ba087e60-0d04-11e7-85c5-2aab8605a8ce.PNG)
+![3](https://cloud.githubusercontent.com/assets/1851856/24094101/d6433150-0d5f-11e7-9be3-2b0ce6ace547.PNG)
 
 There is a simple help menu in Monitoring Server application.
 

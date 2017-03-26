@@ -36,7 +36,7 @@ When CPU usage reached 100%, Monitoring server app can't take new request. So, r
 
 ![8](https://cloud.githubusercontent.com/assets/1851856/24085678/b7e9cfc2-0d08-11e7-89b4-ea67d4c2d377.PNG)
 
-## 2000 Concurrent Request
+## 2000 Concurrent Request and Response in 1 sec
 
 ![10](https://cloud.githubusercontent.com/assets/1851856/24334575/08e7af54-1275-11e7-9791-7e4d2c9b9d92.PNG)
 

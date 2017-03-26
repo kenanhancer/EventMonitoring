@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +35,43 @@ namespace ClientTestApp
 
         public static void Main(string[] args)
         {
+            Console.WriteLine("Event Monitoring Test Application");
+            Console.WriteLine("=================================");
+
+            //string ip = "127.0.0.1";
+            //string port = "8080";
+
+            //Console.WriteLine($"IP(127.0.0.1): {ip}");
+            //Console.WriteLine($"Port(8080): {port}");
+
+
+#if DEBUG
+                string ip = "127.0.0.1";
+                string port = "8080";
+
+                Console.WriteLine($"IP(127.0.0.1): {ip}");
+                Console.WriteLine($"Port(8080): {port}");
+#else
+            Console.Write("IP(127.0.0.1): ");
+            string ip = Console.ReadLine().Trim();
+            IPAddress ipAddress;
+
+            while (String.IsNullOrEmpty(ip) || !IPAddress.TryParse(ip, out ipAddress))
+            {
+                Console.Write("IP(127.0.0.1): ");
+                ip = Console.ReadLine().Trim();
+            }
+
+            Console.Write("Port(8080): ");
+            string port = Console.ReadLine().Trim();
+
+            while (String.IsNullOrEmpty(port) || (port.ToCharArray().Any(c => !Char.IsNumber(c))))
+            {
+                Console.Write("Port(8080): ");
+                port = Console.ReadLine().Trim();
+            }
+#endif
+
             Func<Task<int>> initalMenu = async () =>
             {
                 CancellationTokenSource cts = new CancellationTokenSource();
@@ -44,27 +82,6 @@ namespace ClientTestApp
 
                     cts.Cancel();
                 };
-
-                Console.WriteLine("Event Monitoring Test Application");
-                Console.WriteLine("=================================");
-                Console.Write("IP(127.0.0.1): ");
-                string ip = Console.ReadLine().Trim();
-                IPAddress ipAddress;
-
-                while (String.IsNullOrEmpty(ip) || !IPAddress.TryParse(ip, out ipAddress))
-                {
-                    Console.Write("IP(127.0.0.1): ");
-                    ip = Console.ReadLine().Trim();
-                }
-
-                Console.Write("Port(8080): ");
-                string port = Console.ReadLine().Trim();
-
-                while (String.IsNullOrEmpty(port) || (port.ToCharArray().Any(c => !Char.IsNumber(c))))
-                {
-                    Console.Write("Port(8080): ");
-                    port = Console.ReadLine().Trim();
-                }
 
                 Console.WriteLine("\nTest Cases:");
                 Console.WriteLine("===========");
@@ -93,8 +110,16 @@ namespace ClientTestApp
                     clientNumer = Console.ReadLine().Trim();
                 }
 
+#if DEBUG
+                clientNumer = clientNumer.ValueOrNull() ?? "2";
+#endif
+
                 Console.Write("Show events(Y/N): ");
                 string showEvents = Console.ReadLine().Trim().ToLower();
+
+#if DEBUG
+                showEvents = showEvents.ValueOrNull() ?? "Y";
+#endif
 
                 while (String.IsNullOrEmpty(showEvents) || (!yesArray.Contains(showEvents) && !noArray.Contains(showEvents)))
                 {
@@ -204,7 +229,7 @@ namespace ClientTestApp
                                                              .WithCancellation(token)
                                                              .Select(async index =>
                                                              {
-                                                                 await SendLog(url, token).ContinueWith(t => t, token).ThrowsAsync(ex => Console.WriteLine(ex.Message));
+                                                                 await SendLog2(url, token).ContinueWith(t => t, token).ThrowsAsync(ex => Console.WriteLine(ex.Message)).ConfigureAwait(false);
                                                              });
 
             return taskList;
@@ -214,50 +239,103 @@ namespace ClientTestApp
         {
             for (int i = 0; i < count; i++)
             {
-                await SendLog(url, CancellationToken.None).ThrowsAsync(ex => Console.WriteLine(ex.Message));
+                await SendLog2(url, CancellationToken.None).ThrowsAsync(ex => Console.WriteLine(ex.Message)).ConfigureAwait(false);
             }
         }
 
         static async Task SendLog(string url, CancellationToken token)
         {
-            WebRequest webRequest = WebRequest.Create(url);
-            webRequest.Method = "POST";
-
-            string clientId = randomUserArray[random.Value.Next(randomUserArray.Length)];
-            string eventId = Guid.NewGuid().ToString("N");
-            string eventTimeStamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString();
-            string eventKey = eventTypeArray[random.Value.Next(eventTypeArray.Length)];
-            string eventValue = randomEventValueArray[random.Value.Next(randomEventValueArray.Length)];
-
-            string body = "{" + $"'client_id':'{clientId}','event_timestamp':{eventTimeStamp},'event_type':'CUMULATIVE','event_key':'{eventKey}', 'event_value':'{eventValue}'" + "}";
-
-            byte[] requestBodyBuffer = Encoding.UTF8.GetBytes(body.Trim());
-
-            //webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.ContentType = "application/json";
-
-            using (Stream reqStream = await webRequest.GetRequestStreamAsync().ContinueWith(t => t.Result, token))
+            try
             {
-                await reqStream.WriteAsync(requestBodyBuffer, 0, requestBodyBuffer.Length).ContinueWith(t => t, token);
+                WebRequest webRequest = WebRequest.Create(url);
+                webRequest.Proxy = null;
+                webRequest.Method = "POST";
+                //webRequest.ContentType = "application/x-www-form-urlencoded";
+                webRequest.ContentType = "application/json";
 
-                Interlocked.Increment(ref requestCount);
-            }
+                string clientId = randomUserArray[random.Value.Next(randomUserArray.Length)];
+                string eventId = Guid.NewGuid().ToString("N");
+                string eventTimeStamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString();
+                string eventKey = eventTypeArray[random.Value.Next(eventTypeArray.Length)];
+                string eventValue = randomEventValueArray[random.Value.Next(randomEventValueArray.Length)];
 
-            if (showEventsToConsole)
-                await Console.Out.WriteLineAsync(body);
+                string body = "{" + $"'client_id':'{clientId}','event_timestamp':{eventTimeStamp},'event_type':'CUMULATIVE','event_key':'{eventKey}', 'event_value':'{eventValue}'" + "}";
 
-            WebResponse webResponse = await webRequest.GetResponseAsync().ContinueWith(t => t.Result, token);
+                byte[] requestBodyBuffer = Encoding.UTF8.GetBytes(body.Trim());
 
-            using (StreamReader sr = new StreamReader(webResponse.GetResponseStream()))
-            {
-                string response = await sr.ReadToEndAsync().ContinueWith(t => t.Result, token);
+                using (Stream reqStream = await webRequest.GetRequestStreamAsync().ContinueWith(f => f.Result, token).ConfigureAwait(false))
+                {
+                    await reqStream.WriteAsync(requestBodyBuffer, 0, requestBodyBuffer.Length, token).ConfigureAwait(false);
+
+                    Interlocked.Increment(ref requestCount);
+                }
+
+                if (showEventsToConsole)
+                    await Console.Out.WriteLineAsync(body).ContinueWith(f => f, token).ConfigureAwait(false);
+
+                WebResponse webResponse = await webRequest.GetResponseAsync().ContinueWith(f => f.Result, token).ConfigureAwait(false);
 
                 Interlocked.Increment(ref responseCount);
 
+                using (StreamReader sr = new StreamReader(webResponse.GetResponseStream()))
+                {
+                    string response = await sr.ReadToEndAsync().ContinueWith(f => f.Result, token).ConfigureAwait(false);
+
 #if DEBUG
-                //await Console.Out.WriteLineAsync($"CLIENT: server response is -> {response}");
+                    //await Console.Out.WriteLineAsync($"CLIENT: server response is -> {response}");
 #endif
+                }
+            }
+            catch (Exception ex)
+            {
+                //await Console.Out.WriteLineAsync(ex.ToString());
             }
         }
+
+        static async Task SendLog2(string url, CancellationToken token)
+        {
+            try
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+
+                    string clientId = randomUserArray[random.Value.Next(randomUserArray.Length)];
+                    string eventId = Guid.NewGuid().ToString("N");
+                    string eventTimeStamp = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString();
+                    string eventKey = eventTypeArray[random.Value.Next(eventTypeArray.Length)];
+                    string eventValue = randomEventValueArray[random.Value.Next(randomEventValueArray.Length)];
+
+                    string body = "{" + $"'client_id':'{clientId}','event_timestamp':{eventTimeStamp},'event_type':'CUMULATIVE','event_key':'{eventKey}', 'event_value':'{eventValue}'" + "}";
+
+                    byte[] requestBodyBuffer = Encoding.UTF8.GetBytes(body.Trim());
+
+                    var content = new StringContent(body, Encoding.UTF8, "application/json");
+
+                    var request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Version = Version.Parse("1.1");
+                    request.Content = content;
+
+                    Interlocked.Increment(ref requestCount);
+
+                    if (showEventsToConsole)
+                        await Console.Out.WriteLineAsync(body).ContinueWith(f => f, token).ConfigureAwait(false);
+
+                    using (HttpResponseMessage httpResponseMessage = await httpClient.PostAsync(url, content))
+                    {
+                        Interlocked.Increment(ref responseCount);
+
+                        using (Stream stream = await httpResponseMessage.Content.ReadAsStreamAsync())
+                        {
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //await Console.Out.WriteLineAsync(ex.ToString());
+            }
+        }
+
     }
 }

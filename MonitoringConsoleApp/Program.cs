@@ -17,6 +17,12 @@ namespace MonitoringConsoleApp
 
             if (args.Length == 0)
             {
+                //string port = "8080";
+
+#if DEBUG
+                string port = "8080";
+
+#else   
                 Console.Write("Port(8080): ");
                 string port = Console.ReadLine().Trim();
 
@@ -25,6 +31,7 @@ namespace MonitoringConsoleApp
                     Console.Write("Port(8080): ");
                     port = Console.ReadLine().Trim();
                 }
+#endif
 
                 args = new string[] { port };
             }
@@ -54,16 +61,23 @@ namespace MonitoringConsoleApp
 
             SimpleMonitoringServer simpleMonitoringServer = null;
 
+            AutoResetEvent are = new AutoResetEvent(false);
+
             Task.Run(async () =>
             {
                 using (simpleMonitoringServer = new SimpleMonitoringServer(ip, portNumber, inMemoryCache, "client_id", cts.Token))
                 {
-                    await simpleMonitoringServer.AcceptEventAsync(eventData =>
+                    Console.WriteLine($"\nIP: {ip}\nPort: {portNumber}\n");
+                    are.Set();
+
+                    await simpleMonitoringServer.AcceptEventAsync(async eventData =>
                     {
                         //await Console.Out.WriteLineAsync(eventData);
                     });
                 }
             });
+
+            are.WaitOne();
 
             string command;
             string commandName;
@@ -118,7 +132,6 @@ namespace MonitoringConsoleApp
 
                 Console.WriteLine();
             }
-
 
             //Console.ReadLine();
         }

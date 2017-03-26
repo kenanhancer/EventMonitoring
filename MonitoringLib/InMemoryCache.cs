@@ -53,11 +53,14 @@ namespace MonitoringLib
             lock (inMemoryCache)
             {
                 List<object> val;
-                if (inMemoryCache.TryGetValue(key, out val))
+                if (!inMemoryCache.TryGetValue(key, out val))
                 {
-                    if (callback != null)
-                        return callback(this, val);
+                    val = new List<object>();
+                    inMemoryCache.Add(key, val);
                 }
+
+                if (callback != null)
+                    return callback(this, val);
             }
             return false;
         }

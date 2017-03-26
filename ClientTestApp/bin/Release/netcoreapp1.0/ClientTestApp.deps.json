@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0",
-    "signature": "09db60146a5b8a0d40c5ea0fb7485ab3bbdd4a1a"
+    "signature": "072ff94641c7f42e450c93f3e61b7e8c7bf16acb"
   },
   "compilationOptions": {},
   "targets": {
@@ -14,22 +14,43 @@
           "ClientTestApp.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "Microsoft.NETCore.Targets/1.1.0": {},
       "Newtonsoft.Json/9.0.1": {
         "dependencies": {
+          "System.Runtime": "4.3.0",
           "System.Runtime.Serialization.Primitives": "4.1.1"
         },
         "runtime": {
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "System.Runtime/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0"
+        }
+      },
       "System.Runtime.Serialization.Primitives/4.1.1": {
+        "dependencies": {
+          "System.Runtime": "4.3.0"
+        },
         "runtime": {
           "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
         }
       },
+      "System.Threading.Thread/4.3.0": {
+        "dependencies": {
+          "System.Runtime": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Threading.Thread.dll": {}
+        }
+      },
       "MonitoringLib/1.0.0": {
         "dependencies": {
-          "Newtonsoft.Json": "9.0.1"
+          "Newtonsoft.Json": "9.0.1",
+          "System.Threading.Thread": "4.3.0"
         },
         "runtime": {
           "MonitoringLib.dll": {}
@@ -43,15 +64,35 @@
       "serviceable": false,
       "sha512": ""
     },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A=="
+    },
+    "Microsoft.NETCore.Targets/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg=="
+    },
     "Newtonsoft.Json/9.0.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw=="
     },
+    "System.Runtime/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw=="
+    },
     "System.Runtime.Serialization.Primitives/4.1.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-HZ6Du5QrTG8MNJbf4e4qMO3JRAkIboGT5Fk804uZtg3Gq516S7hAqTm2UZKUHa7/6HUGdVy3AqMQKbns06G/cg=="
+    },
+    "System.Threading.Thread/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OHmbT+Zz065NKII/ZHcH9XO1dEuLGI1L2k7uYss+9C1jLxTC9kTZZuzUOyXHayRk+dft9CiDf3I/QZ0t8JKyBQ=="
     },
     "MonitoringLib/1.0.0": {
       "type": "project",

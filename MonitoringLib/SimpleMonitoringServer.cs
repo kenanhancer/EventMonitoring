@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace MonitoringLib
 {
@@ -18,12 +16,12 @@ namespace MonitoringLib
 
         public SimpleMonitoringServer(string ip, string portNumber, ICache cache, string eventKeyFieldName, CancellationToken token)
         {
-            simpleListener = new SimpleHttpListener(ip, portNumber, 8 * 1024, 1000, token);
+            simpleListener = new SimpleHttpListener(ip, portNumber, 8 * 1024, 3000, token);
             this.cache = cache;
             this.eventKeyFieldName = eventKeyFieldName;
         }
 
-        public async Task AcceptEventAsync(Action<string> eventCallback = null)
+        public async Task AcceptEventAsync(Action<string> callback = null)
         {
             await simpleListener.AcceptClientsAsync(eventData =>
             {
@@ -44,13 +42,9 @@ namespace MonitoringLib
                         return true;
                     });
 
-                    if (!isUpdated)
-                    {
-                        List<object> objList = new List<object> { eventObj };
-                        cache.Add(eventKeyValue, objList);
-                    }
-
-                    eventCallback?.Invoke(eventData);
+                    if (callback != null)
+                        Task.Run(() => callback(eventData));
+                    //eventCallback?.Invoke(eventData);
                 }
                 catch (Exception ex)
                 {

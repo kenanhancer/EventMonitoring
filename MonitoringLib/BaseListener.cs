@@ -38,6 +38,8 @@ namespace MonitoringLib
             int port = Helper.GetPort(PortNumber);
 
             tcpListener = new TcpListener(ipAddress, port);
+
+            tcpListener.Start(BacklogClientCount);//backlog 1000 clients.
         }
 
         public virtual Task AcceptClientsAsync(Action<string> callback)
